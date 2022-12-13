@@ -2,37 +2,62 @@
 // 게임 서버 메인 앱
 //
 let express = require('express');
-const ThenPromise = require('promise');
- let app = express();
- let server = require('http').Server(app);
- let io = require('socket.io')(server, {});
+let app = express();
+let server = require('http').Server(app);
+let io = require('socket.io')(server, {});
+
+let mongoClient=require('mongodb').MongoClient;
+let url = "mongodb+srv://admin:password123456@cluster0.qsuxf.mongodb.net/mmorpgdb?retryWrites=true&w=majority";
+let promise = require('promise');
+let dbo;
  
- let promise = require('promise');
- 
- app.get('/', function (req, res) {
+app.get('/', function (req, res) {
      res.sendFile(__dirname + '/client/index.html');
- });
+});
  
- app.use('/client', express.static(__dirname + '/client'));
+app.use('/client', express.static(__dirname + '/client'));
  
- server.listen(process.env.PORT || SERVER_PORT);
+server.listen(process.env.PORT || SERVER_PORT);
  
- console.log('Server Started! localhost: ' + SERVER_PORT);
+console.log('Server Started! localhost: ' + SERVER_PORT);
  
  //전역 객체 리스트. 서버에서 접속자, 플레이어, 투사체 객체를 보관하고, pop push함
- let socketList = {};
- let playerList = {};
- let bulletList = {};
+let socketList = {};
+let playerList = {};
+let bulletList = {};
  
  
+mongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {//데이터베이스 연동
+    if (err) throw err;
+    dbo = db.db("mmorpg");
+
+    dbo.collection(MONGO_REPO, function (err, res) {
+        if (err) throw err;
+        console.log("Collection created!");
+    });
+
+});
+
  io.sockets.on('connection', function (socket) {
  
      socket.id = Math.random();
      socketList[socket.id] = socket;
      console.log("Socket " + socket.id + " has connected");
  
+     socket.on('signUp', function (userData) {
+        isValidNewCredential(userData).then(function (res) {
+            if (res)
+                insertCredential(userData);
+            socket.emit('signUpResponse', { success: res });
+        })
+    });
+
      socket.on('signIn',function (userData){
-         onConnect(socket,userData);
+        isCorrectCredential(userData).then(function(res){
+            if(res.valid)
+                onConnect(socket,userData);
+            socket.emit('signInResponse',{success:res.valid});
+        })
      });
  
      socket.on('disconnect', function () {
@@ -151,6 +176,53 @@ const ThenPromise = require('promise');
  }, REFRESH_RATE);
  
  
+function isValidNewCredential(userData) {
+    return new Promise(function (callback) {
+        var query = {
+            username: userData.username
+        };
+        dbo.collection(MONGO_REPO).find(query).toArray(function (err, result) {
+            if (err) throw err;
+            if (result.length == 0) {
+                console.log("user credential not taken yet: " + JSON.stringify(userData));
+                callback(true);
+            }
+            else {
+                callback(false);
+                console.log("User credential already exist: " + JSON.stringify(result));
+            }
+        });
+    });
+}
  
- 
- 
+ function isCorrectCredential(userData) {
+    return new Promise(function (callback) {
+        var query = {
+            username: userData.username,
+            password: userData.password
+        };
+        dbo.collection(MONGO_REPO).find(query).toArray(function (err, result) {
+            if (err) throw err;
+            if (result.length != 0) {
+                console.log("크리덴셜 매칭: " + JSON.stringify(result[0]));
+                callback({ valid: true, points: result[0].points });
+            }
+            else {
+                callback({ valid: false, points: null });
+                console.log("패스워드 틀림");
+            }
+        });
+    });
+}
+
+function insertCredential(data) {
+    var account = {
+        username: data.username,
+        password: data.password,
+        points: 0
+    };
+    dbo.collection(MONGO_REPO).insertOne(account, function (err, res) {
+        if (err) throw err;
+        console.log("MongoDB Document Inserted: " + JSON.stringify(account));
+    });
+}

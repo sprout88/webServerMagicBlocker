@@ -31,40 +31,68 @@ function Ui(my_socket,client_data){
         const ui_title = document.createElement('div');//게임 제목을 표시
         ui_title.classList.add('ui');
         ui_title.classList.add('title');
-        ui_title.innerHTML='Magic Blocker.io';
+        ui_title.innerHTML='온라인 게임';
 
         ui_div.appendChild(ui_title);
-
+/////로그인 창
         const ui_name_input = document.createElement('input');//닉네임 입력란
         ui_name_input.classList.add('ui');
         ui_name_input.id='username_input';
-        ui_name_input.setAttribute('placeholder','Please Enter Nickname');
+        ui_name_input.setAttribute('placeholder','아이디를 입력하세요');
         ui_name_input.setAttribute('maxlength','8');
 
         ui_div.appendChild(ui_name_input);
+        
+        const ui_password_input = document.createElement('input');//비밀번호 입력란
+        ui_password_input.classList.add('ui');
+        ui_password_input.id='password_input';
+        ui_password_input.setAttribute('placeholder','비밀번호를 입력하세요');
+        ui_password_input.setAttribute('maxlength','8');
+        ui_div.appendChild(ui_password_input);
+        
 
-        const ui_play_button = document.createElement('button');//게임 플레이 버튼
-        ui_play_button.classList.add('ui');
-        ui_play_button.id='play_button';
-        ui_play_button.innerHTML='Play';
+        const ui_signIn_button = document.createElement('button');//접속 버튼(가입이 되어있는 경우)
+        ui_signIn_button.classList.add('ui');
+        ui_signIn_button.id='signIn_button';
+        ui_signIn_button.innerHTML='접속';
 
-        ui_play_button.onclick = function(){
-            let userid = document.getElementById("username_input").value.trim()
-                    if(userid===""){ //이름을 입력하지않으면 기본이름으로 접속
-                        userid="이름없는유저"+Math.floor(Math.random()*10000);
-                    }
-                    if(selected_char==="none"){//캐릭터를 선택하지않으면 랜덤으로 선택
-                        selected_char=client_data.char_list_pick[Math.floor(Math.random()*client_data.char_list_pick.length)];
-                    }
-                    ui_div.style.display = 'none';
-                    my_socket.emit('signIn', {
-                        username: userid,
-                        char:selected_char,
-                    });
+        ui_signIn_button.onclick = function(){
+            if(selected_char==="none"){//캐릭터를 선택하지않으면 랜덤으로 선택
+                selected_char=client_data.char_list_pick[Math.floor(Math.random()*client_data.char_list_pick.length)];
+            }
+            my_socket.emit('signIn', { username: ui_name_input.value.trim(), password: ui_password_input.value.trim(), char:selected_char });
         }
     
-        ui_div.appendChild(ui_play_button);
+        ui_div.appendChild(ui_signIn_button);
 
+        const ui_signUp_button = document.createElement('button');//접속 버튼(가입이 되어있는 경우)
+        ui_signUp_button.classList.add('ui');
+        ui_signUp_button.id='signUp_button';
+        ui_signUp_button.innerHTML='가입';
+
+        ui_signUp_button.onclick = function(){
+            my_socket.emit('signUp', { username: ui_password_input.value.trim(), password: ui_password_input.value.trim() });
+        }
+    
+        ui_div.appendChild(ui_signUp_button);
+
+        my_socket.on('signUpResponse', function (data) {
+            if (data.success) {
+                alert("가입되었습니다! 아이디와 비밀번호로 로그인하세요.")
+            }
+            else
+                alert("가입오류 : 닉네임이 사용중입니다.");
+        });
+        my_socket.on('signInResponse', function (data) {
+            if (data.success) {
+                ui_div.style.display = 'none';
+            }
+            else
+                alert("Sign in unsuccessful");
+        });
+
+
+    ///////
         const ui_how_to_play = document.createElement('button');//조작법 안내 버튼
         ui_how_to_play.classList.add('ui');
         ui_how_to_play.classList.add('how-to-play');

@@ -13,6 +13,35 @@
 body{
     background-color: #3c3e70;
 }
+/*로그인창*/
+
+#loginTitle {
+    margin: 0;
+    margin-bottom: 20px;
+    width: 100%;
+padding: 0;
+    font-family: aaargh, sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+    color: green;
+}
+
+#signDiv {
+    text-align: center;
+    margin-top: 50px;
+    width: 268px;
+    padding: 30px;
+    border: none;
+    box-shadow: 0 0 30px 3px rgba(0, 0, 255, 0.3);
+    background-color: rgba(0, 0, 255, 0.3);
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -200px;
+}
+
 
 /*게임이 렌더링되는 캔버스*/
 #gameCanvas{
@@ -121,7 +150,7 @@ body{
 .title{
     width: 50vw;
     height: 20vh;
-    top: 10%;
+    top: 5%;
     left: 50%;
     transform:translateX(-50%);
     font-family: 'Black Han Sans', sans-serif; /*웹폰트*/
@@ -134,7 +163,7 @@ body{
 #username_input{
     width:30%;
     height:4vmax;
-    top: 30%;
+    top: 20%;
     left: 45%;
     transform:translateX(-50%);
     padding: 28px;
@@ -151,9 +180,71 @@ body{
     border-radius: 20px;
     transition:0.5s; /*서서히 커짐*/
 }
+#password_input{
+    width:30%;
+    height:4vmax;
+    top: 30%;
+    left: 45%;
+    transform:translateX(-50%);
+    padding: 28px;
+    background-color: rgba(0, 0, 0, 0.4);
+    transition:0.5s;
+    font-size: 3vmax;
+}
+#password_input::placeholder{
+    font-size: 2vmax;
+}
 
-#play_button {
-    width: 10vmin;
+#password_input:focus{
+    border-color: #fce181;
+    border-radius: 20px;
+    transition:0.5s; /*서서히 커짐*/
+}
+
+#signIn_button {
+    width: 15vmin;
+    height: 8vmin;
+    top: 20%;
+    left: 65%;
+    transform:translateX(-50%);
+    font-size: 3vmin;
+    /* padding: 1vw 2vh; */
+    padding:0;
+    border: 2px solid #fffff0;
+    background-color: transparent;
+    color: #fffff0;
+    text-align:center;
+    text-transform: uppercase;
+    /* letter-spacing: 5px; */
+    font-weight: bold;
+    transition: all 0.4s;
+    overflow: hidden;
+}
+#signIn_button:focus {
+    outline: none;
+}
+
+#signIn_button::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #fffff0;
+    top: 100%;
+    left: 0;
+    transition: all 0.4s;
+    z-index: -1;
+}
+
+#signIn_button:hover {
+    color: #3c3e70;
+}
+#signIn_button:hover::before{
+    transform:translateY(-100%);
+}
+
+#signUp_button {
+    width: 15vmin;
     height: 8vmin;
     top: 30%;
     left: 65%;
@@ -171,11 +262,11 @@ body{
     transition: all 0.4s;
     overflow: hidden;
 }
-#play_button:focus {
+#signUp_button:focus {
     outline: none;
 }
 
-#play_button::before {
+#signUp_button::before {
     content: "";
     position: absolute;
     height: 100%;
@@ -187,17 +278,17 @@ body{
     z-index: -1;
 }
 
-#play_button:hover {
+#signUp_button:hover {
     color: #3c3e70;
 }
-#play_button:hover::before{
+#signUp_button:hover::before{
     transform:translateY(-100%);
 }
 
 /*캐릭터 선택창*/
 .char-select{
     width: 40%;
-    top: 40%;
+    top: 45%;
     left: 50%;  
     background-color: rgba(239, 235, 235, 0.5);
     transform:translateX(-50%)
