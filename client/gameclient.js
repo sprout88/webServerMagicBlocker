@@ -490,6 +490,7 @@ function Ui(my_socket,client_data){
         
         const ui_password_input = document.createElement('input');//비밀번호 입력란
         ui_password_input.classList.add('ui');
+         ui_name_input.setAttribute('required','');
         ui_password_input.id='password_input';
         ui_password_input.setAttribute('placeholder','비밀번호를 입력하세요');
         ui_password_input.setAttribute('maxlength','8');
@@ -535,7 +536,7 @@ function Ui(my_socket,client_data){
                 ui_div.style.display = 'none';
             }
             else
-                alert("Sign in unsuccessful");
+                alert("아이디 또는 비밀번호가 틀립니다...");
         });
 
 
