@@ -24,7 +24,7 @@ function Ui(my_socket,client_data){
         game_div.appendChild(game_canvas);
 
         //게임 UI 생성
-        const ui_div = document.createElement("div");//game 접속 UI 의 모든 요소들을 포함하는 부모div
+        const ui_div = document.createElement("form");//game 접속 UI 의 모든 요소들을 포함하는 부모div
         ui_div.id='ui_div'
         document.body.appendChild(ui_div);
         
@@ -46,7 +46,8 @@ function Ui(my_socket,client_data){
         
         const ui_password_input = document.createElement('input');//비밀번호 입력란
         ui_password_input.classList.add('ui');
-         ui_name_input.setAttribute('required','');
+        ui_password_input.setAttribute('required','');
+        ui_password_input.setAttribute('type','password');
         ui_password_input.id='password_input';
         ui_password_input.setAttribute('placeholder','비밀번호를 입력하세요');
         ui_password_input.setAttribute('maxlength','8');
@@ -56,10 +57,10 @@ function Ui(my_socket,client_data){
         const ui_signIn_button = document.createElement('button');//접속 버튼(가입이 되어있는 경우)
         ui_signIn_button.classList.add('ui');
         ui_signIn_button.id='signIn_button';
-        ui_signIn_button.setAttribute('type','submit');
         ui_signIn_button.innerHTML='접속';
 
         ui_signIn_button.onclick = function(){
+            event.preventDefault();
             if(selected_char==="none"){//캐릭터를 선택하지않으면 랜덤으로 선택
                 selected_char=client_data.char_list_pick[Math.floor(Math.random()*client_data.char_list_pick.length)];
             }
@@ -75,6 +76,7 @@ function Ui(my_socket,client_data){
         ui_signUp_button.innerHTML='가입';
 
         ui_signUp_button.onclick = function(){
+            event.preventDefault();
             my_socket.emit('signUp', { username: ui_password_input.value.trim(), password: ui_password_input.value.trim() });
         }
     

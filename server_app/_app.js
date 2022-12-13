@@ -7,7 +7,7 @@ let server = require('http').Server(app);
 let io = require('socket.io')(server, {});
 
 let mongoClient=require('mongodb').MongoClient;
-let url = "mongodb+srv://admin:password123456@cluster0.qsuxf.mongodb.net/mmorpgdb?retryWrites=true&w=majority";
+let url = "mongodb+srv://admin:admin@cluster0.uax19z8.mongodb.net/test";
 let Promise = require('promise');
 let dbo;
 
@@ -33,7 +33,7 @@ mongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true }, fun
 
     dbo.collection(MONGO_REPO, function (err, res) {
         if (err) throw err;
-        console.log("Collection 연결되었음...");
+        console.log("몽고디비 데이터베이스에 연결되었음...");
     });
 
 });
@@ -183,12 +183,12 @@ function isValidNewCredential(userData) {
         dbo.collection(MONGO_REPO).find(query).toArray(function (err, result) {
             if (err) throw err;
             if (result.length == 0) {
-                console.log("데이터베이스에 없는 유저네임: " + JSON.stringify(userData));
+                console.log("데이터베이스에 없는 유저네임");
                 callback(true);
             }
             else {
                 callback(false);
-                console.log("데이터베이스에 동일한 유저네임이 존재합니다...: " + JSON.stringify(result));
+                console.log("데이터베이스에 동일한 유저네임이 존재합니다...:");
             }
         });
     });
@@ -198,12 +198,12 @@ function isValidNewCredential(userData) {
     return new Promise(function (callback) {
         var query = {
             username: userData.username,
-            password: userData.password
+            password: userData.password,
         };
         dbo.collection(MONGO_REPO).find(query).toArray(function (err, result) {
             if (err) throw err;
             if (result.length != 0) {
-                console.log("크리덴셜 매칭: " + JSON.stringify(result[0]));
+                console.log("크리덴셜 매칭 성공!");
                 callback({ valid: true, points: result[0].points });
             }
             else {
@@ -222,6 +222,6 @@ function insertCredential(data) {
     };
     dbo.collection(MONGO_REPO).insertOne(account, function (err, res) {
         if (err) throw err;
-        console.log("MongoDB 에 insert 되었습니다.: " + JSON.stringify(account));
+        console.log("MongoDB 에 insert 되었습니다.: ");
     });
 }
