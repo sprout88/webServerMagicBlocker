@@ -94,7 +94,7 @@ function Ui(my_socket,client_data){
                 ui_div.style.display = 'none';
             }
             else
-                alert("아이디 또는 비밀번호가 틀립니다...");
+                alert("아이디 또는 비밀번호가 틀리거나, 존재하지 않는 계정입니다.");
         });
 
 

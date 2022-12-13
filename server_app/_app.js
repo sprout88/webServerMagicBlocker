@@ -29,7 +29,7 @@ let bulletList = {};
  
 mongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true }, function (err, db) {//데이터베이스 연동
     if (err) throw err;
-    dbo = db.db("gameAcoountsDB");
+    dbo = db.db("gameAccountsDB");
 
     dbo.collection(MONGO_REPO, function (err, res) {
         if (err) throw err;
