@@ -978,9 +978,9 @@ let io = require('socket.io')(server, {});
 
 let mongoClient=require('mongodb').MongoClient;
 let url = "mongodb+srv://admin:password123456@cluster0.qsuxf.mongodb.net/mmorpgdb?retryWrites=true&w=majority";
-let promise = require('promise');
+let Promise = require('promise');
 let dbo;
- 
+
 app.get('/', function (req, res) {
      res.sendFile(__dirname + '/client/index.html');
 });
@@ -1003,7 +1003,7 @@ mongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true }, fun
 
     dbo.collection(MONGO_REPO, function (err, res) {
         if (err) throw err;
-        console.log("Collection created!");
+        console.log("Collection 연결되었음...");
     });
 
 });
@@ -1012,7 +1012,7 @@ mongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true }, fun
  
      socket.id = Math.random();
      socketList[socket.id] = socket;
-     console.log("Socket " + socket.id + " has connected");
+     console.log("소켓연결됨/socket.id:" + socket.id);
  
      socket.on('signUp', function (userData) {
         isValidNewCredential(userData).then(function (res) {
@@ -1033,12 +1033,11 @@ mongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true }, fun
      socket.on('disconnect', function () {
          if (socketList[socket.id] != null) {
              delete socketList[socket.id];
-             console.log(socket.id + " has disconnected");
+             console.log("소켓연결 해제됨/socket.id:" + socket.id);
          }
          let player = playerList[socket.id];
          if (player != null) {
  
-             toAllChat(player.username + " has disconnected.");
  
              let query = {
                  username: player.username
@@ -1154,12 +1153,12 @@ function isValidNewCredential(userData) {
         dbo.collection(MONGO_REPO).find(query).toArray(function (err, result) {
             if (err) throw err;
             if (result.length == 0) {
-                console.log("user credential not taken yet: " + JSON.stringify(userData));
+                console.log("데이터베이스에 없는 유저네임: " + JSON.stringify(userData));
                 callback(true);
             }
             else {
                 callback(false);
-                console.log("User credential already exist: " + JSON.stringify(result));
+                console.log("데이터베이스에 동일한 유저네임이 존재합니다...: " + JSON.stringify(result));
             }
         });
     });
@@ -1193,6 +1192,6 @@ function insertCredential(data) {
     };
     dbo.collection(MONGO_REPO).insertOne(account, function (err, res) {
         if (err) throw err;
-        console.log("MongoDB Document Inserted: " + JSON.stringify(account));
+        console.log("MongoDB 에 insert 되었습니다.: " + JSON.stringify(account));
     });
 }

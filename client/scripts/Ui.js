@@ -37,6 +37,7 @@ function Ui(my_socket,client_data){
 /////로그인 창
         const ui_name_input = document.createElement('input');//닉네임 입력란
         ui_name_input.classList.add('ui');
+        ui_name_input.setAttribute('required','');
         ui_name_input.id='username_input';
         ui_name_input.setAttribute('placeholder','아이디를 입력하세요');
         ui_name_input.setAttribute('maxlength','8');
@@ -54,6 +55,7 @@ function Ui(my_socket,client_data){
         const ui_signIn_button = document.createElement('button');//접속 버튼(가입이 되어있는 경우)
         ui_signIn_button.classList.add('ui');
         ui_signIn_button.id='signIn_button';
+        ui_signIn_button.setAttribute('type','submit');
         ui_signIn_button.innerHTML='접속';
 
         ui_signIn_button.onclick = function(){
@@ -65,9 +67,10 @@ function Ui(my_socket,client_data){
     
         ui_div.appendChild(ui_signIn_button);
 
-        const ui_signUp_button = document.createElement('button');//접속 버튼(가입이 되어있는 경우)
+        const ui_signUp_button = document.createElement('button');//접속 버튼(가입이 안되어있는 경우)
         ui_signUp_button.classList.add('ui');
         ui_signUp_button.id='signUp_button';
+        ui_signIn_button.setAttribute('type','submit');
         ui_signUp_button.innerHTML='가입';
 
         ui_signUp_button.onclick = function(){
